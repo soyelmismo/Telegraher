@@ -44,28 +44,8 @@ jobs:
                     restore-keys: |
                         ${{ runner.os }}-ndk-27.2.12479018-
                         ${{ runner.os }}-ndk-
-            -   name: Enable Graher keystore
-                env:
-                    GRAHER_KEYSTORE_BASE64: ${{secrets.GRAHER_KEYSTORE_BASE64}}
-                    GRAHER_RELEASE_STORE_PASSWORD: ${{secrets.GRAHER_RELEASE_STORE_PASSWORD}}
-                    GRAHER_RELEASE_KEY_ALIAS: ${{secrets.GRAHER_RELEASE_KEY_ALIAS}}
-                    GRAHER_RELEASE_KEY_PASSWORD: ${{secrets.GRAHER_RELEASE_KEY_PASSWORD}}
-                run: |
-                    mv /home/runner/work/Telegraher/Telegraher/TMessagesProj/config/release.keystore /home/runner/work/Telegraher/Telegraher/TMessagesProj/config/release.keystore.old
-                    echo "$GRAHER_KEYSTORE_BASE64" | base64 --decode > /home/runner/work/Telegraher/Telegraher/TMessagesProj/config/release.keystore
-                    cp /home/runner/work/Telegraher/Telegraher/gradle.properties /home/runner/work/Telegraher/Telegraher/gradle.properties.old
-                    sed -i "s/RELEASE_STORE_PASSWORD=android/RELEASE_STORE_PASSWORD=$GRAHER_RELEASE_STORE_PASSWORD/g" /home/runner/work/Telegraher/Telegraher/gradle.properties
-                    sed -i "s/RELEASE_KEY_ALIAS=androidkey/RELEASE_KEY_ALIAS=$GRAHER_RELEASE_KEY_ALIAS/g" /home/runner/work/Telegraher/Telegraher/gradle.properties
-                    sed -i "s/RELEASE_KEY_PASSWORD=android/RELEASE_KEY_PASSWORD=$GRAHER_RELEASE_KEY_PASSWORD/g" /home/runner/work/Telegraher/Telegraher/gradle.properties
             -   name: Build APK
                 run: gradle :TMessagesProj_AppStandalone:assembleStandalone
-            -   name: Disable Graher keystore
-                if: always()
-                run: |
-                    rm /home/runner/work/Telegraher/Telegraher/TMessagesProj/config/release.keystore
-                    mv /home/runner/work/Telegraher/Telegraher/TMessagesProj/config/release.keystore.old /home/runner/work/Telegraher/Telegraher/TMessagesProj/config/release.keystore
-                    rm /home/runner/work/Telegraher/Telegraher/gradle.properties
-                    mv /home/runner/work/Telegraher/Telegraher/gradle.properties.old /home/runner/work/Telegraher/Telegraher/gradle.properties
             -   name: Verify APK exists
                 id: locate_apk
                 run: |
