@@ -1,3 +1,6 @@
+permissions:
+  contents: write
+
 name: sudo bring me a beer
 
 on:
@@ -23,7 +26,6 @@ jobs:
     apk:
         name: Generate APK
         runs-on: ubuntu-latest
-        environment: graherkeys
         steps:
             -   name: Checkout
                 uses: actions/checkout@v6
