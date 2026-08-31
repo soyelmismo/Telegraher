@@ -504,6 +504,10 @@ public class SharedConfig {
     }
 
     public static void saveAccounts() {
+        if (ApplicationLoader.applicationContext == null) {
+            FileLog.e("saveAccounts: applicationContext is null");
+            return;
+        }
         FileLog.d("Save accounts: " + activeAccounts);
         ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE).edit()
                 .putString("active_accounts", StringUtils.join(activeAccounts, ","))

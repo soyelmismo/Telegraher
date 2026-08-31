@@ -256,8 +256,22 @@ public class UserConfig extends BaseController {
         synchronized (sync) {
             TLRPC.User oldUser = currentUser;
             currentUser = user;
-            clientUserId = user.id;
+            clientUserId = user != null ? user.id : 0;
             checkPremiumSelf(oldUser, user);
+            syncAccount();
+        }
+    }
+
+    public void syncAccount() {
+        boolean activated = currentUser != null;
+        if (activated) {
+            if (SharedConfig.activeAccounts.add(currentAccount)) {
+                SharedConfig.saveAccounts();
+            }
+        } else {
+            if (SharedConfig.activeAccounts.remove(currentAccount)) {
+                SharedConfig.saveAccounts();
+            }
         }
     }
 
@@ -370,6 +384,7 @@ public class UserConfig extends BaseController {
                 clientUserId = currentUser.id;
             }
             configLoaded = true;
+            syncAccount();
         }
     }
 
@@ -478,6 +493,7 @@ public class UserConfig extends BaseController {
         draftsLoaded = false;
         contactsReimported = true;
         syncContacts = true;
+        syncAccount();
         showCallsTab = false;
         suggestContacts = true;
         unreadDialogsLoaded = true;
